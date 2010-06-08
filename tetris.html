@@ -2,6 +2,24 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>hello</title>
+<script type="text/javascript" charset="utf-8">
+	function draw(){
+		var canvas = document.getElementById("tetris");
+		if (canvas.getContext){
+			var ctx = canvas.getContext("2d");
+			drawBox(ctx,1,19,"blue");
+			drawBox(ctx,0,19,"blue");
+			drawBox(ctx,2,19,"blue");
+			drawBox(ctx,1,18,"blue");
+		}
+	}	
+	
+	function drawBox(ctx,x,y,color){
+		ctx.fillStyle = color;
+		ctx.fillRect(x*20,y*20,20,20);
+	}	
+	
+</script>
 <style type="text/css" media="screen">
 	h1{font-size:xx-large;
 		font-weight:bold;
@@ -16,15 +34,15 @@
 		width:200px;
 		height:400px;
 		margin:20px;
-		padding:5px;
+		padding:0px;
+		float:left;
 	}
 	#hiscores{
-		width:200px;
-		margin:20px;
+		top-margin:20px;
 	}
 	table{
 		border:solid;
-		float:right;
+		
 	}
 	th{font-family:"Trebuchet MS", Helvetica, sans-serif;
 		font-size:large;
@@ -39,9 +57,10 @@
 	}
 </style>
 <head>
-<body id="" onload="">
+<body id="" onload="draw();">
 	<h1>Tetris</h1>
-	<div id="game">pretend there's a game here!</div>
+	<div id="game">
+		<canvas id="tetris" width="200" height ="400"><canvas></div>
 	<div id="hiscores"><table>
 		<th>High Scores</th>
 		<tr><td class="name">Person1</td>
