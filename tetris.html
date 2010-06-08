@@ -7,17 +7,41 @@
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
 			var ctx = canvas.getContext("2d");
-			drawBox(ctx,1,19,"blue");
-			drawBox(ctx,0,19,"blue");
-			drawBox(ctx,2,19,"blue");
-			drawBox(ctx,1,18,"blue");
+			var tetromino1 = new shape(1,19,0,19,2,19,1,18,"blue");
+			drawShape(ctx,tetromino1);
+			var tetromino2 = new shape(2,18,3,18,3,19,4,19,"green");
+			drawShape(ctx,tetromino2);
 		}
 	}	
 	
 	function drawBox(ctx,x,y,color){
 		ctx.fillStyle = color;
 		ctx.fillRect(x*20,y*20,20,20);
-	}	
+	}
+	
+	function shape(x1,y1,x2,y2,x3,y3,x4,y4,color){
+		this.x1=x1;
+		this.y1=y1;
+		this.x2=x2;
+		this.y2=y2;
+		this.x3=x3;
+		this.y3=y3;
+		this.x4=x4;
+		this.y4=y4;
+		this.color=color;
+		this.minx=Math.min(x1,x2,x3,x4);
+		this.maxx=Math.max(x1,x2,x3,x4);
+		this.miny=Math.min(y1,y2,y3,y4);
+		this.maxy=Math.max(y1,y2,y3,y4);
+	}
+	
+	function drawShape(ctx,shape){
+		ctx.fillStyle = shape.color;
+		ctx.fillRect(shape.x1*20,shape.y1*20,20,20);
+		ctx.fillRect(shape.x2*20,shape.y2*20,20,20);
+		ctx.fillRect(shape.x3*20,shape.y3*20,20,20);
+		ctx.fillRect(shape.x4*20,shape.y4*20,20,20);
+	}
 	
 </script>
 <style type="text/css" media="screen">
