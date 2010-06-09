@@ -6,23 +6,36 @@
 	var ctx;
 	var shape;
 	var oldshape;
+	var nextshape;
 	var done=false;
+	var grid;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
+			buildGrid();
 			ctx = canvas.getContext("2d");
 			var tetromino1 = new Shape(1,19,-1,0,1,0,0,-1,"blue");
 			drawShape(ctx,tetromino1,tetromino1.color);
+		//	grid[0]=true;
 			var tetromino2 = new Shape(2,0,1,0,1,1,2,1,"green");
 			shape=tetromino2;
 			rotate(shape);
 			drop(ctx,shape,shape);
-			tetromino3=new Shape(5,0,6,0,5,1,6,1,"yellow");
-		//	pause(3000);
-		//	shape=tetromino3;
+			tetromino3=new Shape(5,0,1,0,0,1,1,1,"yellow");
+			nextshape=tetromino3;
 		//	drop(ctx,shape,shape);
 		}
 	}	
+	
+	function buildGrid(){
+		grid=new Array(20);
+		for(var i=0;i<20;i=i+1){
+			grid[i]=new Array(10);
+			for(var j=0;j<10;j=j+1){
+				grid[i][j]=false;
+			}
+		}
+	}
 	
 	function drawBox(ctx,x,y,color){
 		ctx.fillStyle = color;
@@ -56,7 +69,7 @@
 	}
 	
 	function rotate(shape){
-		var copy=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,"white");
+		var copy = clone(shape);
 		shape.rx1=-1*copy.ry1;
 		shape.ry1=copy.rx1;
 		shape.rx2=-1*copy.ry2;
@@ -66,25 +79,49 @@
 		calculate(shape);
 	}
 	
+	function clone(shape){
+		copy=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,shape.color);
+		calculate(copy);
+		return copy;
+	}
+	
 	function drawShape(ctx,shape,color){
 		ctx.fillStyle = color;
 		ctx.fillRect(shape.x*20,shape.y*20,20,20);
 		ctx.fillRect(shape.ax1*20,shape.ay1*20,20,20);
 		ctx.fillRect(shape.ax2*20,shape.ay2*20,20,20);
 		ctx.fillRect(shape.ax3*20,shape.ay3*20,20,20);
+		grid[shape.y][shape.x]=true;
+		grid[shape.ay1][shape.ax1]=true;
+		grid[shape.ay2][shape.ax2]=true;
+		grid[shape.ay3][shape.ax3]=true;
+	}
+	
+	function eraseShape(ctx,shape){
+		ctx.fillStyle = "white";
+		ctx.fillRect(shape.x*20,shape.y*20,20,20);
+		ctx.fillRect(shape.ax1*20,shape.ay1*20,20,20);
+		ctx.fillRect(shape.ax2*20,shape.ay2*20,20,20);
+		ctx.fillRect(shape.ax3*20,shape.ay3*20,20,20);
+		grid[shape.y][shape.x]=false;
+		grid[shape.ay1][shape.ax1]=false;
+		grid[shape.ay2][shape.ax2]=false;
+		grid[shape.ay3][shape.ax3]=false;
 	}
 	
 	function drop(ctx,old,shape){
-		if (shape.maxy<=19){
-			oldshape=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,"white");
-			drawShape(ctx,old,"white");
+		eraseShape(ctx,old);
+		if (grid[shape.y][shape.x]==false && grid[shape.ay1][shape.ax1]==false && grid[shape.ay2][shape.ax2]==false && grid[shape.ay3][shape.ax3]==false){
+			oldshape=clone(shape);
 			drawShape(ctx,shape,shape.color);
 			shape.y=shape.y+1;
 			calculate(shape);
 			var t = setTimeout("drop(ctx,oldshape,shape);", 100);
 		}
 		else{
-			done=true;
+			drawShape(ctx,old,shape.color)
+			shape=clone(nextshape);
+			drop(ctx,shape,shape);
 		}
 		
 	}
