@@ -8,7 +8,7 @@
 	var oldshape;
 	var nextshape;
 	var done=false;
-	var grid;
+	var i=0
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
@@ -16,14 +16,14 @@
 			ctx = canvas.getContext("2d");
 			var tetromino1 = new Shape(1,19,-1,0,1,0,0,-1,"blue");
 			drawShape(ctx,tetromino1,tetromino1.color);
-		//	grid[0]=true;
 			var tetromino2 = new Shape(2,0,1,0,1,1,2,1,"green");
 			shape=tetromino2;
-			rotate(shape);
 			drop(ctx,shape,shape);
 			tetromino3=new Shape(5,0,1,0,0,1,1,1,"yellow");
-			nextshape=tetromino3;
-		//	drop(ctx,shape,shape);
+			tetromino6=new Shape(5,0,0,1,0,2,1,0,"purple");
+			tetromino4=new Shape(8,0,0,1,0,2,0,3,"orange");
+			tetromino5=new Shape(3,0,0,1,0,2,-1,0,"red");
+			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6]
 		}
 	}	
 	
@@ -85,8 +85,8 @@
 		return copy;
 	}
 	
-	function drawShape(ctx,shape,color){
-		ctx.fillStyle = color;
+	function drawShape(ctx,shape){
+		ctx.fillStyle = shape.color;
 		ctx.fillRect(shape.x*20,shape.y*20,20,20);
 		ctx.fillRect(shape.ax1*20,shape.ay1*20,20,20);
 		ctx.fillRect(shape.ax2*20,shape.ay2*20,20,20);
@@ -109,19 +109,24 @@
 		grid[shape.ay3][shape.ax3]=false;
 	}
 	
-	function drop(ctx,old,shape){
-		eraseShape(ctx,old);
-		if (grid[shape.y][shape.x]==false && grid[shape.ay1][shape.ax1]==false && grid[shape.ay2][shape.ax2]==false && grid[shape.ay3][shape.ax3]==false){
-			oldshape=clone(shape);
-			drawShape(ctx,shape,shape.color);
-			shape.y=shape.y+1;
+	function drop(ctx,old,shape1){
+		if (shape.maxy<=19){
+			eraseShape(ctx,old);
+		}
+		if (grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false && shape.maxy<=19){
+			oldshape=clone(shape1);
+			drawShape(ctx,shape1);
+			shape1.y=shape1.y+1;
 			calculate(shape);
 			var t = setTimeout("drop(ctx,oldshape,shape);", 100);
 		}
 		else{
-			drawShape(ctx,old,shape.color)
-			shape=clone(nextshape);
-			drop(ctx,shape,shape);
+			drawShape(ctx,oldshape)
+			if (shape !=nextshape){
+			shape=nextshape[i];
+			i++;
+			oldshape=clone(shape);
+			drop(ctx,oldshape,shape);}
 		}
 		
 	}
