@@ -3,14 +3,20 @@
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>hello</title>
 <script type="text/javascript" charset="utf-8">
+	var ctx;
+	var shape;
+	var oldshape;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
-			var ctx = canvas.getContext("2d");
-			var tetromino1 = new shape(1,19,0,19,2,19,1,18,"blue");
-			drawShape(ctx,tetromino1);
-			var tetromino2 = new shape(2,18,3,18,3,19,4,19,"green");
-			drawShape(ctx,tetromino2);
+			ctx = canvas.getContext("2d");
+			var tetromino1 = new Shape(1,19,0,19,2,19,1,18,"blue");
+			drawShape(ctx,tetromino1,tetromino1.color);
+			var tetromino2 = new Shape(2,0,3,0,3,1,4,1,"green");
+			shape=tetromino2;
+			drop(ctx,shape,shape);
+			tetromino3=new Shape(5,0,6,0,5,1,6,1,"yellow");
+		//	shape=tetromino3;
 		}
 	}	
 	
@@ -19,7 +25,7 @@
 		ctx.fillRect(x*20,y*20,20,20);
 	}
 	
-	function shape(x1,y1,x2,y2,x3,y3,x4,y4,color){
+	function Shape(x1,y1,x2,y2,x3,y3,x4,y4,color){
 		this.x1=x1;
 		this.y1=y1;
 		this.x2=x2;
@@ -35,12 +41,28 @@
 		this.maxy=Math.max(y1,y2,y3,y4);
 	}
 	
-	function drawShape(ctx,shape){
-		ctx.fillStyle = shape.color;
+	function drawShape(ctx,shape,color){
+		ctx.fillStyle = color;
 		ctx.fillRect(shape.x1*20,shape.y1*20,20,20);
 		ctx.fillRect(shape.x2*20,shape.y2*20,20,20);
 		ctx.fillRect(shape.x3*20,shape.y3*20,20,20);
 		ctx.fillRect(shape.x4*20,shape.y4*20,20,20);
+	}
+	
+	function drop(ctx,old,shape){
+		if (shape.maxy<=19){
+			oldshape=new Shape(shape.x1,shape.y1,shape.x2,shape.y2,shape.x3,shape.y3,shape.x4,shape.y4,"white");
+			drawShape(ctx,old,"white");
+			drawShape(ctx,shape,shape.color);
+			shape.y1=shape.y1+1;
+			shape.y2=shape.y2+1;
+			shape.y3=shape.y3+1;
+			shape.y4=shape.y4+1;
+			shape.miny=Math.min(shape.y1,shape.y2,shape.y3,shape.y4);
+			shape.maxy=Math.max(shape.y1,shape.y2,shape.y3,shape.y4);
+			var t = setTimeout("drop(ctx,oldshape,shape);", 100);
+		}
+		
 	}
 	
 </script>
