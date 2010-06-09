@@ -1,22 +1,26 @@
 <html>
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<title>hello</title>
+	<title>TETRIS</title>
 <script type="text/javascript" charset="utf-8">
 	var ctx;
 	var shape;
 	var oldshape;
+	var done=false;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
 			ctx = canvas.getContext("2d");
-			var tetromino1 = new Shape(1,19,0,19,2,19,1,18,"blue");
+			var tetromino1 = new Shape(1,19,-1,0,1,0,0,-1,"blue");
 			drawShape(ctx,tetromino1,tetromino1.color);
-			var tetromino2 = new Shape(2,0,3,0,3,1,4,1,"green");
+			var tetromino2 = new Shape(2,0,1,0,1,1,2,1,"green");
 			shape=tetromino2;
+			rotate(shape);
 			drop(ctx,shape,shape);
 			tetromino3=new Shape(5,0,6,0,5,1,6,1,"yellow");
+		//	pause(3000);
 		//	shape=tetromino3;
+		//	drop(ctx,shape,shape);
 		}
 	}	
 	
@@ -25,42 +29,62 @@
 		ctx.fillRect(x*20,y*20,20,20);
 	}
 	
-	function Shape(x1,y1,x2,y2,x3,y3,x4,y4,color){
-		this.x1=x1;
-		this.y1=y1;
-		this.x2=x2;
-		this.y2=y2;
-		this.x3=x3;
-		this.y3=y3;
-		this.x4=x4;
-		this.y4=y4;
+	function Shape(x,y,rx1,ry1,rx2,ry2,rx3,ry3,color){
+		this.x=x;
+		this.y=y;
+		this.rx1=rx1;
+		this.ry1=ry1;
+		this.rx2=rx2;
+		this.ry2=ry2;
+		this.rx3=rx3;
+		this.ry3=ry3;
 		this.color=color;
-		this.minx=Math.min(x1,x2,x3,x4);
-		this.maxx=Math.max(x1,x2,x3,x4);
-		this.miny=Math.min(y1,y2,y3,y4);
-		this.maxy=Math.max(y1,y2,y3,y4);
+		calculate(this);
+	}
+	
+	function calculate(shape){
+		shape.ax1=shape.x+shape.rx1;
+		shape.ax2=shape.x+shape.rx2;
+		shape.ax3=shape.x+shape.rx3;
+		shape.ay1=shape.y+shape.ry1;
+		shape.ay2=shape.y+shape.ry2;
+		shape.ay3=shape.y+shape.ry3;
+		shape.minx=Math.min(shape.x,shape.ax1,shape.ax2,shape.ax3);
+		shape.maxx=Math.max(shape.x,shape.ax1,shape.ax2,shape.ax3);
+		shape.miny=Math.min(shape.y,shape.ay1,shape.ay2,shape.ay3);
+		shape.maxy=Math.max(shape.y,shape.ay1,shape.ay2,shape.ay3);
+	}
+	
+	function rotate(shape){
+		var copy=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,"white");
+		shape.rx1=-1*copy.ry1;
+		shape.ry1=copy.rx1;
+		shape.rx2=-1*copy.ry2;
+		shape.ry2=copy.rx2;
+		shape.rx3=-1*copy.ry3;
+		shape.ry3=copy.rx3;
+		calculate(shape);
 	}
 	
 	function drawShape(ctx,shape,color){
 		ctx.fillStyle = color;
-		ctx.fillRect(shape.x1*20,shape.y1*20,20,20);
-		ctx.fillRect(shape.x2*20,shape.y2*20,20,20);
-		ctx.fillRect(shape.x3*20,shape.y3*20,20,20);
-		ctx.fillRect(shape.x4*20,shape.y4*20,20,20);
+		ctx.fillRect(shape.x*20,shape.y*20,20,20);
+		ctx.fillRect(shape.ax1*20,shape.ay1*20,20,20);
+		ctx.fillRect(shape.ax2*20,shape.ay2*20,20,20);
+		ctx.fillRect(shape.ax3*20,shape.ay3*20,20,20);
 	}
 	
 	function drop(ctx,old,shape){
 		if (shape.maxy<=19){
-			oldshape=new Shape(shape.x1,shape.y1,shape.x2,shape.y2,shape.x3,shape.y3,shape.x4,shape.y4,"white");
+			oldshape=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,"white");
 			drawShape(ctx,old,"white");
 			drawShape(ctx,shape,shape.color);
-			shape.y1=shape.y1+1;
-			shape.y2=shape.y2+1;
-			shape.y3=shape.y3+1;
-			shape.y4=shape.y4+1;
-			shape.miny=Math.min(shape.y1,shape.y2,shape.y3,shape.y4);
-			shape.maxy=Math.max(shape.y1,shape.y2,shape.y3,shape.y4);
+			shape.y=shape.y+1;
+			calculate(shape);
 			var t = setTimeout("drop(ctx,oldshape,shape);", 100);
+		}
+		else{
+			done=true;
 		}
 		
 	}
