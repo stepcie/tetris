@@ -8,7 +8,8 @@
 	var oldshape;
 	var nextshape;
 	var done=false;
-	var i=0
+	var grid;
+	var n=0;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
@@ -20,10 +21,12 @@
 			shape=tetromino2;
 			drop(ctx,shape,shape);
 			tetromino3=new Shape(5,0,1,0,0,1,1,1,"yellow");
-			tetromino6=new Shape(5,0,0,1,0,2,1,0,"purple");
-			tetromino4=new Shape(8,0,0,1,0,2,0,3,"orange");
-			tetromino5=new Shape(3,0,0,1,0,2,-1,0,"red");
-			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6]
+			tetromino6=new Shape(4,0,0,1,0,2,1,0,"purple");
+			tetromino5=new Shape(8,0,0,1,0,2,0,3,"orange");
+			tetromino4=new Shape(7,0,0,1,0,2,-1,0,"red");
+			tetromino7=new Shape(9,0,0,1,0,2,0,3,"blue");
+			rotate(tetromino6);
+			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino7]
 		}
 	}	
 	
@@ -122,9 +125,31 @@
 		}
 		else{
 			drawShape(ctx,oldshape)
+			for (var i=19;i>=0;i=i-1){
+				var clear=true;
+				for (var j=0;j<10;j=j+1){
+					if (grid[i][j]==false){
+						clear=false;
+					}
+				}
+				if (clear){
+					for (var k=i;k>=0;k=k-1){
+						if (k==0){
+							grid[0]=new Array(10);
+							for (var m=0;m<10;m=m+1){
+								grid[0][m]=false;
+							}
+						}
+						else{
+							grid[k]=grid[k-1];
+						}
+					}
+					
+				}
+			}
 			if (shape !=nextshape){
-			shape=nextshape[i];
-			i++;
+			shape=nextshape[n];
+			n++;
 			oldshape=clone(shape);
 			drop(ctx,oldshape,shape);}
 		}
