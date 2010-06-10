@@ -20,16 +20,16 @@
 			drawShape(ctx,tetromino1,tetromino1.color);
 			var tetromino2 = new Shape(2,0,1,0,1,1,2,1,"green");
 			shape=tetromino2;
-			drop(ctx,shape,shape);
 			tetromino3=new Shape(5,0,1,0,0,1,1,1,"yellow");
 			tetromino6=new Shape(4,0,0,1,0,2,1,0,"purple");
 			tetromino5=new Shape(8,0,0,1,0,2,0,3,"orange");
 			tetromino4=new Shape(7,0,0,1,0,2,-1,0,"red");
 			tetromino7=new Shape(9,0,0,1,0,2,0,3,"blue");
-			rotate(tetromino5);
+	//		rotate(tetromino5);
 			tetromino8 = new Shape(0,1,-1,0,1,0,0,-1,"blue");
 			rotate(tetromino8);
 			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino8,tetromino7]
+			drop(ctx,shape,shape);
 		}
 	}	
 	
@@ -48,7 +48,7 @@
 	}
 	
 	function update(shape1){
-		if (keypressed==37){
+		if (keypressed==37&&shape1.minx>0){
 			shape1.x--;
 			calculate(shape1);
 			keypressed=false;
@@ -58,13 +58,16 @@
 			calculate(shape1);
 			keypressed=false;
 		}
-		else if(keypressed ==39){
+		else if(keypressed ==39&&shape1.maxx<9){
 			shape1.x++;
 			calculate(shape1);
 			keypressed=false;
 		}
 		else if(keypressed ==38){
 			rotate(shape1);
+			if (shape1.maxx>9 || shape1.minx<0){
+				rotatec(shape1);
+			}
 			keypressed=false;
 		}
 	}
@@ -126,6 +129,19 @@
 		calculate(shape1);
 	}
 	
+	function rotatec(shape1){
+		var temp = shape1.ry1;
+		shape1.ry1=-1*shape1.rx1;
+		shape1.rx1=temp;
+		temp = shape1.ry2;
+		shape1.ry2=-1*shape1.rx2;
+		shape1.rx2=temp;
+		temp = shape1.ry3;
+		shape1.ry3=-1*shape1.rx3;
+		shape1.rx3=temp;
+		calculate(shape1);
+	}
+	
 	function clone(shape){
 		copy=new Shape(shape.x,shape.y,shape.rx1,shape.ry1,shape.rx2,shape.ry2,shape.rx3,shape.ry3,shape.color);
 		calculate(copy);
@@ -162,7 +178,6 @@
 		}
 		update(shape1);
 		if (grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false && shape.maxy<=19){
-			shape1=shape;
 			oldshape=clone(shape1);
 			drawShape(ctx,shape1);
 			shape1.y=shape1.y+1;
