@@ -11,6 +11,8 @@
 	var grid;
 	var n=0;
 	var keypressed=false;
+	var a;
+	var b;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
@@ -173,11 +175,11 @@
 	}
 	
 	function drop(ctx,old,shape1){
+		update(shape1);
 		if (shape.maxy<=19){
 			eraseShape(ctx,old);
 		}
-		update(shape1);
-		if (grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false && shape.maxy<=19){
+		if (shape.maxy<=19 && grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false){
 			oldshape=clone(shape1);
 			drawShape(ctx,shape1);
 			shape1.y=shape1.y+1;
