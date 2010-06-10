@@ -26,7 +26,9 @@
 			tetromino4=new Shape(7,0,0,1,0,2,-1,0,"red");
 			tetromino7=new Shape(9,0,0,1,0,2,0,3,"blue");
 			rotate(tetromino6);
-			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino7]
+			tetromino8 = new Shape(0,1,-1,0,1,0,0,-1,"blue");
+			rotate(tetromino8);
+			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino7,tetromino8]
 		}
 	}	
 	
@@ -43,6 +45,19 @@
 	function drawBox(ctx,x,y,color){
 		ctx.fillStyle = color;
 		ctx.fillRect(x*20,y*20,20,20);
+	}
+	
+	function redraw(ctx){
+		for (var i = 0; i<=19;i++){
+			for (var j=0;j<=9;j++){
+				if (grid[i][j]!=false){
+					drawBox(ctx,j,i,grid[i][j]);
+				}
+				else{
+					drawBox(ctx,j,i,"white");
+				}
+			}
+		}
 	}
 	
 	function Shape(x,y,rx1,ry1,rx2,ry2,rx3,ry3,color){
@@ -94,10 +109,10 @@
 		ctx.fillRect(shape.ax1*20,shape.ay1*20,20,20);
 		ctx.fillRect(shape.ax2*20,shape.ay2*20,20,20);
 		ctx.fillRect(shape.ax3*20,shape.ay3*20,20,20);
-		grid[shape.y][shape.x]=true;
-		grid[shape.ay1][shape.ax1]=true;
-		grid[shape.ay2][shape.ax2]=true;
-		grid[shape.ay3][shape.ax3]=true;
+		grid[shape.y][shape.x]=shape.color;
+		grid[shape.ay1][shape.ax1]=shape.color;
+		grid[shape.ay2][shape.ax2]=shape.color;
+		grid[shape.ay3][shape.ax3]=shape.color;
 	}
 	
 	function eraseShape(ctx,shape){
@@ -125,7 +140,7 @@
 		}
 		else{
 			drawShape(ctx,oldshape)
-			for (var i=19;i>=0;i=i-1){
+			for (var i=0;i<=19;i=i+1){
 				var clear=true;
 				for (var j=0;j<10;j=j+1){
 					if (grid[i][j]==false){
@@ -147,7 +162,8 @@
 					
 				}
 			}
-			if (shape !=nextshape){
+			redraw(ctx);
+			if (nextshape!=null){
 			shape=nextshape[n];
 			n++;
 			oldshape=clone(shape);
