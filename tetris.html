@@ -10,6 +10,7 @@
 	var done=false;
 	var grid;
 	var n=0;
+	var keypressed=false;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
@@ -25,10 +26,10 @@
 			tetromino5=new Shape(8,0,0,1,0,2,0,3,"orange");
 			tetromino4=new Shape(7,0,0,1,0,2,-1,0,"red");
 			tetromino7=new Shape(9,0,0,1,0,2,0,3,"blue");
-			rotate(tetromino6);
+			rotate(tetromino5);
 			tetromino8 = new Shape(0,1,-1,0,1,0,0,-1,"blue");
 			rotate(tetromino8);
-			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino7,tetromino8]
+			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino8,tetromino7]
 		}
 	}	
 	
@@ -39,6 +40,32 @@
 			for(var j=0;j<10;j=j+1){
 				grid[i][j]=false;
 			}
+		}
+	}
+	
+	function keyboard(e){
+		keypressed = e.keyCode;
+	}
+	
+	function update(shape1){
+		if (keypressed==37){
+			shape1.x--;
+			calculate(shape1);
+			keypressed=false;
+		}
+		else if(keypressed == 40){
+			shape1.y++;
+			calculate(shape1);
+			keypressed=false;
+		}
+		else if(keypressed ==39){
+			shape1.x++;
+			calculate(shape1);
+			keypressed=false;
+		}
+		else if(keypressed ==38){
+			rotate(shape1);
+			keypressed=false;
 		}
 	}
 	
@@ -86,15 +113,17 @@
 		shape.maxy=Math.max(shape.y,shape.ay1,shape.ay2,shape.ay3);
 	}
 	
-	function rotate(shape){
-		var copy = clone(shape);
-		shape.rx1=-1*copy.ry1;
-		shape.ry1=copy.rx1;
-		shape.rx2=-1*copy.ry2;
-		shape.ry2=copy.rx2;
-		shape.rx3=-1*copy.ry3;
-		shape.ry3=copy.rx3;
-		calculate(shape);
+	function rotate(shape1){
+		var temp = shape1.rx1;
+		shape1.rx1=-1*shape1.ry1;
+		shape1.ry1=temp;
+		temp = shape1.rx2;
+		shape1.rx2=-1*shape1.ry2;
+		shape1.ry2=temp;
+		temp = shape1.rx3;
+		shape1.rx3=-1*shape1.ry3;
+		shape1.ry3=temp;
+		calculate(shape1);
 	}
 	
 	function clone(shape){
@@ -131,7 +160,9 @@
 		if (shape.maxy<=19){
 			eraseShape(ctx,old);
 		}
+		update(shape1);
 		if (grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false && shape.maxy<=19){
+			shape1=shape;
 			oldshape=clone(shape1);
 			drawShape(ctx,shape1);
 			shape1.y=shape1.y+1;
@@ -163,7 +194,7 @@
 				}
 			}
 			redraw(ctx);
-			if (nextshape!=null){
+			if (nextshape[n]!=null){
 			shape=nextshape[n];
 			n++;
 			oldshape=clone(shape);
@@ -210,7 +241,7 @@
 	}
 </style>
 <head>
-<body id="" onload="draw();">
+<body id="" onload="draw();" onkeypress="keyboard(event);">
 	<h1>Tetris</h1>
 	<div id="game">
 		<canvas id="tetris" width="200" height ="400"><canvas></div>
