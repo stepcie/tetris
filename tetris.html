@@ -50,28 +50,33 @@
 	}
 	
 	function update(shape1){
-		if (keypressed==37&&shape1.minx>0){
-			shape1.x--;
-			calculate(shape1);
-			keypressed=false;
-		}
-		else if(keypressed == 40){
-			shape1.y++;
-			calculate(shape1);
-			keypressed=false;
-		}
-		else if(keypressed ==39&&shape1.maxx<9){
-			shape1.x++;
-			calculate(shape1);
-			keypressed=false;
-		}
-		else if(keypressed ==38){
-			rotate(shape1);
-			if (shape1.maxx>9 || shape1.minx<0){
-				rotatec(shape1);
+		n=0;
+//		while(n<keypressed.length){
+			if (keypressed==37&&shape1.minx>0){
+				shape1.x--;
+				calculate(shape1);
+				keypressed=false;
 			}
-			keypressed=false;
-		}
+			else if(keypressed == 40&&shape1.maxy<19){
+				shape1.y++;
+				calculate(shape1);
+				keypressed=false;
+			}
+			else if(keypressed ==39&&shape1.maxx<9){
+				shape1.x++;
+				calculate(shape1);
+				keypressed=false;
+			}
+			else if(keypressed ==38){
+				rotate(shape1);
+				if (shape1.maxx>9 || shape1.minx<0 || shape1.maxy>19){
+					rotatec(shape1);
+				}
+				keypressed=false;
+			}
+//		}
+		keypressed=false;
+		n=0;
 	}
 	
 	function drawBox(ctx,x,y,color){
@@ -160,6 +165,7 @@
 		grid[shape.ay1][shape.ax1]=shape.color;
 		grid[shape.ay2][shape.ax2]=shape.color;
 		grid[shape.ay3][shape.ax3]=shape.color;
+		a=shape.ay2;
 	}
 	
 	function eraseShape(ctx,shape){
