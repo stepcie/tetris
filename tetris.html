@@ -6,19 +6,19 @@
 	var ctx;
 	var shape;
 	var oldshape;
-	var nextshape;
+//	var nextshape;
 	var done=false;
 	var grid;
 	var n=0;
 	var keypressed=false;
-	var a;
-	var b;
+	var score=0;
+	var gameover=false;
 	function draw(){
 		var canvas = document.getElementById("tetris");
 		if (canvas.getContext){
 			buildGrid();
 			ctx = canvas.getContext("2d");
-			var tetromino1 = new Shape(1,19,-1,0,1,0,0,-1,"blue");
+		/*	var tetromino1 = new Shape(1,19,-1,0,1,0,0,-1,"blue");
 			drawShape(ctx,tetromino1,tetromino1.color);
 			var tetromino2 = new Shape(4,0,1,0,1,1,2,1,"green");
 			shape=tetromino2;
@@ -29,7 +29,9 @@
 			tetromino7=new Shape(4,0,0,1,0,2,0,3,"orange");
 			tetromino8 = new Shape(4,1,-1,0,1,0,0,-1,"blue");
 			rotate(tetromino8);
-			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino8,tetromino7]
+			nextshape=[tetromino3,tetromino4,tetromino5,tetromino6,tetromino8,tetromino7]*/
+			var tetromino=randomShape();
+			shape=tetromino;
 			drop(ctx,shape,shape);
 		}
 	}	
@@ -50,7 +52,6 @@
   
 	function update(shape1){
 		if (keypressed==37&&shape1.minx>0){
-			a=shape1.minx;
 			shape1.x--;
 			calculate(shape1);
 			if (!(shape1.maxy<=19&&grid[shape1.y][shape1.x]==false && grid[shape1.ay1][shape1.ax1]==false && grid[shape1.ay2][shape1.ax2]==false && grid[shape1.ay3][shape1.ax3]==false)){
@@ -186,6 +187,33 @@
 		grid[shape.ay3][shape.ax3]=false;
 	}
 	
+	function randomShape(){
+		var randomnumber=Math.floor(Math.random()*7);
+		var tetromino;
+		if (randomnumber==0){
+			tetromino=new Shape(4,0,0,1,0,2,-1,0,"red");
+		}
+		else if (randomnumber==1){
+			tetromino=new Shape(4,0,0,1,0,2,0,3,"orange");
+		}
+		else if (randomnumber==2){
+			tetromino=new Shape(4,0,1,0,0,1,1,1,"yellow");
+		}
+		else if (randomnumber==3){
+			tetromino=new Shape(4,0,1,0,1,1,2,1,"green");
+		}
+		else if (randomnumber==4){
+			tetromino=new Shape(4,1,-1,0,1,0,0,-1,"blue");
+		}
+		else if (randomnumber==5){
+			tetromino=new Shape(4,0,0,1,0,2,1,0,"purple");
+		}
+		else if (randomnumber==6){
+			tetromino=new Shape(4,0,-1,0,-1,1,-2,1,"black");
+		}
+		return tetromino
+	}
+	
 	function drop(ctx,old,shape1){
 		if (shape.maxy<=19){
 			eraseShape(ctx,old);
@@ -223,11 +251,19 @@
 				}
 			}
 			redraw(ctx);
-			if (nextshape[n]!=null){
-			shape=nextshape[n];
-			n++;
+			for (var j=0;j<10;j=j+1){
+				if (grid[0][j]!=false){
+					gameover=true;
+				}
+			}
+			if (!gameover){
+			shape=randomShape();
 			oldshape=clone(shape);
 			drop(ctx,oldshape,shape);}
+			else{
+				buildGrid();
+				redraw(ctx);
+			}
 		}
 		
 	}
