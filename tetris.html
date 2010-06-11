@@ -4,6 +4,7 @@
 	<title>TETRIS</title>
 <script type="text/javascript" charset="utf-8">
 	var ctx;
+	var canvas
 	var shape;
 	var oldshape;
 //	var nextshape;
@@ -13,8 +14,9 @@
 	var keypressed=false;
 	var score=0;
 	var gameover=false;
-	function draw(){
-		var canvas = document.getElementById("tetris");
+	function draw(button){
+		canvas = document.getElementById("tetris");
+		button.style.display="none";
 		if (canvas.getContext){
 			buildGrid();
 			ctx = canvas.getContext("2d");
@@ -35,6 +37,10 @@
 			drop(ctx,shape,shape);
 		}
 	}	
+	
+	function start(){
+		
+	}
 	
 	function buildGrid(){
 		grid=new Array(20);
@@ -209,7 +215,7 @@
 			tetromino=new Shape(4,0,0,1,0,2,1,0,"purple");
 		}
 		else if (randomnumber==6){
-			tetromino=new Shape(4,0,-1,0,-1,1,-2,1,"black");
+			tetromino=new Shape(6,0,-1,0,-1,1,-2,1,"black");
 		}
 		return tetromino
 	}
@@ -264,6 +270,9 @@
 			else{
 				buildGrid();
 				redraw(ctx);
+				var text=document.getElementById("gameovertxt");
+				text.style.display="block";
+				canvas.style.display="none";
 			}
 		}
 		
@@ -290,6 +299,9 @@
 	#hiscores{
 		top-margin:20px;
 	}
+	#gameovertxt{
+		display:none;
+	}
 	table{
 		border:solid;
 		
@@ -307,10 +319,15 @@
 	}
 </style>
 <head>
-<body id="" onload="draw();" onkeypress="keyboard(event);">
+<body id="" onkeypress="keyboard(event);">
 	<h1>Tetris</h1>
 	<div id="game">
+		<button type = "button" onclick="draw(this);">Start!</button>
+		<div id="gameovertxt">
+			GAME OVER!
+		</div>
 		<canvas id="tetris" width="200" height ="400"><canvas></div>
+		
 	<div id="hiscores"><table>
 		<th>High Scores</th>
 		<tr><td class="name">Person1</td>
