@@ -247,7 +247,7 @@
 							grid[k]=grid[k-1];
 						}
 					}
-					
+					score=score+100;
 				}
 			}
 			redraw(ctx);
@@ -257,6 +257,7 @@
 				}
 			}
 			if (!gameover){
+			score=score+10;
 			shape=randomShape();
 			oldshape=clone(shape);
 			drop(ctx,oldshape,shape);}
