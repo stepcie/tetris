@@ -2,6 +2,7 @@
 <head>
 	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
 	<title>TETRIS</title>
+	<script type ="text/javascript" src = "http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.js"></script>
 <script type="text/javascript" charset="utf-8">
 	var ctx;
 	var canvas
@@ -220,6 +221,14 @@
 		return tetromino
 	}
 	
+	function submitscore(){
+		name=$("#name")[0].value;
+		console.log("name:"+name);
+		console.log("score:"+score);
+		$.post("http://localhost:8888/score",{"name":name,"score":score});
+		console.log("done");
+	}
+	
 	function drop(ctx,old,shape1){
 		if (shape.maxy<=19){
 			eraseShape(ctx,old);
@@ -325,21 +334,25 @@
 		<button type = "button" onclick="draw(this);">Start!</button>
 		<div id="gameovertxt">
 			GAME OVER!
+			<label for="name">Name</label><input type="text" name="name" value="" id="name">
+			<button onclick="submitscore();">Submit!</button>
 		</div>
 		<canvas id="tetris" width="200" height ="400"><canvas></div>
 		
 	<div id="hiscores"><table>
 		<th>High Scores</th>
-		<tr><td class="name">Person1</td>
-			<td class="score">1234</td></tr>
-		<tr><td class="name">Person2</td>
+		{%for item in highscores%}
+		<tr><td class="name">{{escape(str(item[0]))}}</td>
+			<td class="score">{{escape(str(item[1]))}}</td></tr>
+		{%end%}
+		<!--<tr><td class="name">Person2</td>
 			<td class="score">1000</td></tr>
 		<tr><td class="name">Person3</td>
 			<td class="score">965</td></tr>
 		<tr><td class="name">Person4</td>
 			<td class="score">876</td></tr>
 		<tr><td class="name">Person5</td>
-			<td class="score">543</td></tr>
+			<td class="score">543</td></tr>-->
 		</table>
 		</div>
 </body>
